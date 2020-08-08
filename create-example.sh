@@ -1,0 +1,111 @@
+#!/bin/bash -e
+################################################################################
+export VOILA_NAME="aporeto"
+export VOILA_K8S_CONTEXT="snoopy.se.aporeto.io"
+
+export VOILA_DOCKER_REGISTRY="docker.io"
+export VOILA_DOCKER_ORG="aporeto"
+
+export VOILA_DOCKER_IMAGE=voila
+export VOILA_DOCKER_TAG="release-3.14.5"
+
+export VOILA_K8S_NAMESPACE="aporeto-svcs"
+export VOILA_HELM_REPO="aporeto-svcs"
+export VOILA_NETWORKING_MODE="LoadBalancer"
+export VOILA_NETWORKING_NODE_PORT_API=""
+export VOILA_NETWORKING_NODE_PORT_UI=""
+export VOILA_NETWORKING_NODE_PORT_DOC=""
+export VOILA_NETWORKING_NODE_PORT_TRACING=""
+export VOILA_NETWORKING_NODE_PORT_MONITORING=""
+export VOILA_NETWORKING_NODE_PORT_LOGGING=""
+export VOILA_NETWORKING_LB_IP_API=""
+export VOILA_NETWORKING_LB_IP_UI=""
+export VOILA_NETWORKING_LB_IP_DOC=""
+export VOILA_NETWORKING_LB_IP_TRACING=""
+export VOILA_NETWORKING_LB_IP_MONITORING=""
+export VOILA_NETWORKING_LB_IP_LOGGING=""
+export VOILA_NETWORKING_PUBLIC_URL_API="https://api.console.se.aporeto.io"
+export VOILA_NETWORKING_PUBLIC_URL_UI="https://console.se.aporeto.io"
+export VOILA_NETWORKING_PUBLIC_URL_DOC="https://docs.se.aporeto.io"
+export VOILA_NETWORKING_PUBLIC_URL_TRACING=""
+export VOILA_NETWORKING_PUBLIC_URL_MONITORING=""
+export VOILA_NETWORKING_PUBLIC_URL_LOGGING=""
+export VOILA_NETWORKING_PUBLIC_URL_METRICS=""
+
+################################################################################
+
+mkdir -p tmp && cd tmp
+
+[ -d $VOILA_NAME ] && { echo "Directory $VOILA_NAME already exist"; exit 2; }
+mkdir -p $VOILA_NAME
+
+args+="docker run --rm -ti -v $PWD:/voila-env"
+[[ $VOILA_NAME ]] && args+=" -e VOILA_NAME=$VOILA_NAME"
+[[ $VOILA_K8S_CONTEXT ]] && args+=" -e VOILA_K8S_CONTEXT=$VOILA_K8S_CONTEXT"
+[[ $VOILA_DOCKER_REGISTRY ]] && args+=" -e VOILA_DOCKER_REGISTRY=$VOILA_DOCKER_REGISTRY"
+[[ $VOILA_DOCKER_ORG ]] && args+=" -e VOILA_DOCKER_ORG=$VOILA_DOCKER_ORG"
+[[ $VOILA_UNATTENDED_UPGRADE ]] && args+=" -e VOILA_UNATTENDED_UPGRADE=$VOILA_UNATTENDED_UPGRADE"
+[[ $VOILA_FLAVOR ]] && args+=" -e VOILA_FLAVOR=$VOILA_FLAVOR"
+[[ $VOILA_K8S_NAMESPACE ]] && args+=" -e VOILA_K8S_NAMESPACE=$VOILA_K8S_NAMESPACE"
+[[ $VOILA_HELM_REPO ]] && args+=" -e VOILA_HELM_REPO=$VOILA_HELM_REPO"
+[[ $VOILA_NETWORKING_MODE ]] && args+=" -e VOILA_NETWORKING_MODE=$VOILA_NETWORKING_MODE"
+[[ $VOILA_NETWORKING_NODE_PORT_API ]] && args+=" -e VOILA_NETWORKING_NODE_PORT_API=$VOILA_NETWORKING_NODE_PORT_API"
+[[ $VOILA_NETWORKING_NODE_PORT_UI ]] && args+=" -e VOILA_NETWORKING_NODE_PORT_UI=$VOILA_NETWORKING_NODE_PORT_UI"
+[[ $VOILA_NETWORKING_NODE_PORT_DOC ]] && args+=" -e VOILA_NETWORKING_NODE_PORT_DOC=$VOILA_NETWORKING_NODE_PORT_DOC"
+[[ $VOILA_NETWORKING_NODE_PORT_TRACING ]] && args+=" -e VOILA_NETWORKING_NODE_PORT_TRACING=$VOILA_NETWORKING_NODE_PORT_TRACING"
+[[ $VOILA_NETWORKING_NODE_PORT_MONITORING ]] && args+=" -e VOILA_NETWORKING_NODE_PORT_MONITORING=$VOILA_NETWORKING_NODE_PORT_MONITORING"
+[[ $VOILA_NETWORKING_NODE_PORT_LOGGING ]] && args+=" -e VOILA_NETWORKING_NODE_PORT_LOGGING=$VOILA_NETWORKING_NODE_PORT_LOGGING"
+[[ $VOILA_NETWORKING_LB_IP_API ]] && args+=" -e VOILA_NETWORKING_LB_IP_API=$VOILA_NETWORKING_LB_IP_API"
+[[ $VOILA_NETWORKING_LB_IP_UI ]] && args+=" -e VOILA_NETWORKING_LB_IP_UI=$VOILA_NETWORKING_LB_IP_UI"
+[[ $VOILA_NETWORKING_LB_IP_DOC ]] && args+=" -e VOILA_NETWORKING_LB_IP_DOC=$VOILA_NETWORKING_LB_IP_DOC"
+[[ $VOILA_NETWORKING_LB_IP_TRACING ]] && args+=" -e VOILA_NETWORKING_LB_IP_TRACING=$VOILA_NETWORKING_LB_IP_TRACING"
+[[ $VOILA_NETWORKING_LB_IP_MONITORING ]] && args+=" -e VOILA_NETWORKING_LB_IP_MONITORING=$VOILA_NETWORKING_LB_IP_MONITORING"
+[[ $VOILA_NETWORKING_LB_IP_LOGGING ]] && args+=" -e VOILA_NETWORKING_LB_IP_LOGGING=$VOILA_NETWORKING_LB_IP_LOGGING"
+[[ $VOILA_NETWORKING_PUBLIC_URL_API ]] && args+=" -e VOILA_NETWORKING_PUBLIC_URL_API=$VOILA_NETWORKING_PUBLIC_URL_API"
+[[ $VOILA_NETWORKING_PUBLIC_URL_UI ]] && args+=" -e VOILA_NETWORKING_PUBLIC_URL_UI=$VOILA_NETWORKING_PUBLIC_URL_UI"
+[[ $VOILA_NETWORKING_PUBLIC_URL_DOC ]] && args+=" -e VOILA_NETWORKING_PUBLIC_URL_DOC=$VOILA_NETWORKING_PUBLIC_URL_DOC"
+[[ $VOILA_NETWORKING_PUBLIC_URL_TRACING ]] && args+=" -e VOILA_NETWORKING_PUBLIC_URL_TRACING=$VOILA_NETWORKING_PUBLIC_URL_TRACING"
+[[ $VOILA_NETWORKING_PUBLIC_URL_MONITORING ]] && args+=" -e VOILA_NETWORKING_PUBLIC_URL_MONITORING=$VOILA_NETWORKING_PUBLIC_URL_MONITORING"
+[[ $VOILA_NETWORKING_PUBLIC_URL_LOGGING ]] && args+=" -e VOILA_NETWORKING_PUBLIC_URL_LOGGING=$VOILA_NETWORKING_PUBLIC_URL_LOGGING"
+[[ $VOILA_NETWORKING_PUBLIC_URL_METRICS ]] && args+=" -e VOILA_NETWORKING_PUBLIC_URL_METRICS=$VOILA_NETWORKING_PUBLIC_URL_METRICS"
+
+args+=" -e VOILA_NO_GPG=\"true\""
+args+=" --entrypoint /voila-env/tmpbuild $VOILA_DOCKER_REGISTRY/$VOILA_DOCKER_ORG/$VOILA_DOCKER_IMAGE:$VOILA_DOCKER_TAG"
+
+cat <<EOF > $VOILA_NAME/.gitattributes
+  aporeto.yaml filter=git-crypt diff=git-crypt
+  kubeconfig.highwind filter=git-crypt diff=git-crypt
+  *.pem filter=git-crypt diff=git-crypt
+  id_rsa filter=git-crypt diff=git-crypt
+EOF
+
+cat <<EOF > tmpbuild
+#!/bin/bash
+/entrypoint.sh create
+set -e
+cd /voila-env
+cd \$VOILA_NAME
+rm -rf .git
+git init
+git-crypt init
+git-crypt export-key "/tmp/key"
+GIT_CRYPT_KEY="\$(base64 "/tmp/key" | tr -d '\n')"
+echo \$GIT_CRYPT_KEY > /voila-env/key
+git config --global user.name "Voila"
+git config --global user.email "voila@aporeto.com"
+git add --all
+git commit -q -a -m "Update from \$(date)"
+git-crypt lock >/dev/null 2>&1
+EOF
+
+chmod +x tmpbuild
+
+$args
+
+rm -rf tmpbuild
+
+# Check the key into vault and delete it
+# key=$(<key)
+# rm -rf key
+
+# Push config to repo
